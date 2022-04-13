@@ -15,6 +15,11 @@ body{
 
 }
 
+.logoStyle {
+    border-radius: 15px;
+    box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.5);
+}
+
 main>.container {
     padding: 60px 15px 0;
     margin-bottom: 5rem;
