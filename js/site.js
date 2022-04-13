@@ -64,7 +64,7 @@ const events = [{
     },
 ];
 
-// builds a drop down list of unique cities
+// fires on load builds a drop down list of unique cities
 function buildDropDown() {
 
     // first step is get a handle on the drop down
@@ -106,6 +106,12 @@ function buildDropDown() {
 
     }
 
+    //set the header
+    let statsHeader = document.getElementById("statsHeader");
+    statsHeader.innerHTML = `Stats for All events`;
+
+    //show stats for all events
+    displayStats(curEvents);
 
 }
 
@@ -141,7 +147,8 @@ function getEvents() {
     if (curEvents === null) {
         curEvents = events;
         localStorage.setItem("eventData", JSON.stringify(curEvents));
-    }
+    } 
+
 
     return curEvents;
 }
