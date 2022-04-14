@@ -99,7 +99,27 @@
                     </table>
                 </div>
                 <div class="col-12 col-md-6 order-frst order-md-2">
-                    <img src="/img/SuperDogLogo.png" class="img-fluid p-2">
+                    <img src="/img/SuperDogLogo.png" class="img-fluid m-2 logoStyle">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                        data-bs-target="#addEvent">Add</button>
+                    <table class="table table-striped" id="eventData">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Attendance</th>
+                                <th>Event Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventBody">
+                            <!-- Data Goes Here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -129,6 +149,112 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="addEvent" tabindex="-1" arialabelledby="Add Event" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a New Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="newEventForm" onsubmit="saveEventData()">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="newEventName">Event Name</label>
+                            <input id="newEventName" type="text" class="form-control" placeholder="Event Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newEventCity">City</label>
+                            <input id="newEventCity" type="text" class="form-control" placeholder="City">
+                        </div>
+                        <div class="form-group">
+                            <label for="newEventState">State</label>
+                            <select class="form-control" id="newEventState" required>
+                                <option value="">Select a state</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District Of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newEventAttendance">Attendance</label>
+                            <input id="newEventAttendance" type="number" class="form-control" placeholder="Attendance">
+                        </div>
+                        <div class="form-group">
+                            <label for="newEventDate">Event Date</label>
+                            <input id="newEventDate" type="date" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <template id="eventData-template">
+        <tr>
+            <td data-id="eventName"></td>
+            <td data-id="city"></td>
+            <td data-id="state"></td>
+            <td data-id="attendance"></td>
+            <td data-id="eventDate"></td>
+        </tr>
+    </template>
 
     <template id="dropDown-template">
         <li><a class="dropdown-item" onclick="getEventData(this)" href="#"></a></li>
