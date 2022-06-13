@@ -21,9 +21,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/site.css">
-    <link rel="stylesheet" href="/css/SiteCodeDisplay.css"
-
-    <!-- favicon -->
+    <link rel="stylesheet" href="/css/SiteCodeDisplay.css" <!-- favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -35,7 +33,8 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top navFooterBg">
         <div class="container-fluid">
             <a class="navbar-brand" href="/index.html">
-                <img src="/img/BS250WhiteMark.png" width="40" height="40" class="d-inline-block align-text-center me-1">Super Dog
+                <img src="/img/BS250WhiteMark.png" width="40" height="40"
+                    class="d-inline-block align-text-center me-1">Super Dog
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +52,10 @@
                         <a class="nav-link active" aria-current="page" href="/code.html">The Code</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">The Repo</a>
+                        <a class="nav-link" href="https://github.com/smeltzBrand/superdog">The Repo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="https://brandonsmeltzer.netlify.com">About</a>
                     </li>
                 </ul>
             </div>
@@ -71,42 +70,222 @@
                     <pre class="line-numbers">
                         <code class="language-javascript">
 
-                            //Step ONE - controller accept requests
-                            function getMessage(){
-                            
-                                let msg = document.getElementById("txtMessage").value;
-                            
-                                displayMessage(msg);
-                            
-                            }
-                            
-                            
-                            //Final Step - view
-                            function displayMessage(message) {
-                                
-                                //first get the ol element from the page
-                                element = document.getElementById("results");
-                                
-                                //next create a new li element
-                                let item = document.createElement("li");
-                                //add classes to the li element
-                                item.classList.add("list-group-item");
-                                //set the message for the li element
-                                item.innerHTML = message;
-                            
-                                //add the new item to the list
-                                element.appendChild(item);
-                            
-                            }
+                            // fires on load builds a drop down list of unique cities
+function buildDropDown() {
+
+    // first step is get a handle on the drop down
+    let eventDD = document.getElementById("eventDropDownList");
+    //reset the list
+    eventDD.innerHTML = "";
+
+    //get the template
+    let ddTemplate = document.getElementById("dropDown-template");
+
+    //get the template node
+    let ddItem = document.importNode(ddTemplate.content, true);
+
+    // add the 'All' items to the dropdown
+    let ddLink = ddItem.querySelector("a");
+    ddLink.setAttribute("data-city", "All");
+    ddLink.textContent = "All";
+    eventDD.appendChild(ddItem);
+
+    //add links for the unique cities
+    let curEvents = getEvents();
+    //get our data
+
+    //get a distinct array of city names
+    let distinctCities = [...new Set(curEvents.map((event) => event.city))];
+
+    //filter that data to unique set of cities
+    for (let i = 0; i < distinctCities.length; i++) {
+
+        let ddItem = document.importNode(ddTemplate.content, true);
+
+        // add the other items to the dropdown
+        let ddLink = ddItem.querySelector("a");
+        ddLink.setAttribute("data-city", distinctCities[i]);
+        ddLink.textContent = distinctCities[i];
+        eventDD.appendChild(ddItem);
+
+    }
+
+    //set the header
+    let statsHeader = document.getElementById("statsHeader");
+    statsHeader.innerHTML = `Stats for All events`;
+
+    //show stats for all events
+    displayStats(curEvents);
+
+    //show data for all events
+    displayEventData(curEvents);
+
+}
+
+//this is called everytime a city name is clicked in the dropdown
+function getEventData(element) {
+    let city = element.getAttribute("data-city");
+
+
+    //create the stats for the clicked city
+    let curEvents = getEvents();
+    let filteredEvents = curEvents;
+
+    if (city != "All") {
+        filteredEvents = curEvents.filter(function (item) {
+            if (item.city == city) {
+                return item;
+            }
+        });
+    }
+
+    //set the header
+    let statsHeader = document.getElementById("statsHeader")
+    statsHeader.innerHTML = `Stats for ${city} events`;
+
+    //Call a function to display the stats
+    displayStats(filteredEvents);
+}
+
+//pull the events from local storage
+function getEvents() {
+    let curEvents = JSON.parse(localStorage.getItem("eventData"));
+
+    if (curEvents === null) {
+        curEvents = events;
+        localStorage.setItem("eventData", JSON.stringify(curEvents));
+    }
+
+
+    return curEvents;
+}
+
+//this function displays stats for the selected city
+function displayStats(filteredEvents) {
+
+    let total = 0;
+    let average = 0;
+    let most = 0;
+    let least = -1;
+    let currentAttendance = 0;
+
+    for (let i = 0; i < filteredEvents.length; i++) {
+
+        currentAttendance = filteredEvents[i].attendance;
+        total += currentAttendance;
+
+        if (most < currentAttendance) {
+            most = currentAttendance;
+        }
+
+        if (least > currentAttendance || least < 0) {
+            least = currentAttendance;
+        }
+    }
+
+    average = total / filteredEvents.length;
+
+    //write my values to the page
+    document.getElementById("total").innerHTML = total.toLocaleString();
+    document.getElementById("most").innerHTML = most.toLocaleString();
+    document.getElementById("least").innerHTML = least.toLocaleString();
+    document.getElementById("average").innerHTML = average.toLocaleString(
+        undefined, {
+            minmumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }
+    );
+
+}
+
+// this function displays all of the event data in a 
+//grid on bottom of page
+function displayEventData(curEvents) {
+    let template = document.getElementById("eventData-template");
+    let eventBody = document.getElementById("eventBody");
+    //clear the table to any previous data
+    eventBody.innerHTML = "";
+
+    // loop over all the eventdata and write a row for each event
+    // to the eventBody element.
+    for (let i = 0; i < curEvents.length; i++) {
+        let eventRow = document.importNode(template.content, true);
+
+        //grab only the columns from the template
+        //creates an array of the columns in the template
+        let eventCols = eventRow.querySelectorAll("td");
+
+        eventCols[0].textContent = curEvents[i].event;
+        eventCols[1].textContent = curEvents[i].city;
+        eventCols[2].textContent = curEvents[i].state;
+        eventCols[3].textContent = curEvents[i].attendance;
+        eventCols[4].textContent = new Date(curEvents[i].date).toLocaleDateString();
+
+        eventBody.appendChild(eventRow);
+    }
+
+}
+
+function saveEventData() {
+    //get all of the course data from localstorage
+    let curEvents = getEvents();
+
+    let eventObj = {
+        event: "name",
+        city: "city",
+        state: "state",
+        attendance: 0,
+        date: "01/01/2000"
+    }
+
+    //get the values from the form
+    eventObj.event = document.getElementById("newEventName").value;
+    eventObj.city = document.getElementById("newEventCity").value;
+
+    // get values from the dropdown
+    let stateSel = document.getElementById("newEventState");
+    eventObj.state = stateSel.options[stateSel.selectedIndex].text;
+
+    // turn the input into a number
+    let attendanceNbr = parseInt(document.getElementById("newEventAttendance").value, 10);
+    if (Number.isInteger(attendanceNbr) && attendanceNbr >= 1) {
+        eventObj.attendance = attendanceNbr;
+    } else {
+        Swal.fire("Oops!", "Please enter a number greater than 0");
+        return;
+    }
+
+    //format the date before saving
+    let eventDate = document.getElementById("newEventDate").value;
+    let eventDateFormatted = `${eventDate} 00:00`;
+    eventObj.date = new Date(eventDateFormatted).toLocaleDateString();
+
+    //save
+    curEvents.push(eventObj);
+    localStorage.setItem("eventData", JSON.stringify(curEvents));
+
+    buildDropDown();
+}
                         </code>
                     </pre>
                 </div>
                 <div class="col-12 col-lg-4">
-                    <p>The code is structured in two functions</p>
-                    <h5>getMessage</h5>
-                    <p>Gets values from the user</p>
-                    <h5>displayMessage</h5>
-                    <p>Displays the items on the page</p>
+                    <p>The code is structured in five functions</p>
+                    <h5>buildDropDown</h5>
+                    <p>Grabs the element from the page and calls the functions below to fill a template dropdown menu.
+                    </p>
+                    <h5>getEventData</h5>
+                    <p>Grabs the city selected, calls getEvents, selects the item from the list of events and then calls
+                        displayStats.</p>
+                    <h5>getEvents</h5>
+                    <p>Parses from local storage the event data and then stringifies that data.</p>
+                    <h5>displayStats</h5>
+                    <p>Loops attendance of filtered events to populate stats.</p>
+                    <h5>displayEventData</h5>
+                    <p>Grabs the event data template table and body and loops through the current events object to fill
+                        the table.</p>
+                    <h5>saveEventData</h5>
+                    <p>Saves data to local storage.</p>
                 </div>
             </div>
         </div>

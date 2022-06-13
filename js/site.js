@@ -125,7 +125,7 @@ function getEventData(element) {
 
     //create the stats for the clicked city
     let curEvents = getEvents();
-    let filteredEvents = [];
+    let filteredEvents = curEvents;
 
     if (city != "All") {
         filteredEvents = curEvents.filter(function (item) {
@@ -137,7 +137,7 @@ function getEventData(element) {
 
     //set the header
     let statsHeader = document.getElementById("statsHeader")
-    statsHeader.innerHTML = `Stats for ${city}`;
+    statsHeader.innerHTML = `Stats for ${city} events`;
 
     //Call a function to display the stats
     displayStats(filteredEvents);
