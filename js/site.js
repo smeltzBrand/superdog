@@ -241,16 +241,21 @@ function saveEventData() {
     // get values from the dropdown
     let stateSel = document.getElementById("newEventState");
     eventObj.state = stateSel.options[stateSel.selectedIndex].text;
-    
-    // turn the input into a number
-    let attendanceNbr = parseInt(document.getElementById("newEventAttendance").value,10);
-    eventObj.attendance = attendanceNbr;
 
-     //format the date before saving
+    // turn the input into a number
+    let attendanceNbr = parseInt(document.getElementById("newEventAttendance").value, 10);
+    if (Number.isInteger(attendanceNbr) && attendanceNbr >= 1) {
+        eventObj.attendance = attendanceNbr;
+    } else {
+        Swal.fire("Oops!", "Please enter a number greater than 0");
+        return;
+    }
+
+    //format the date before saving
     let eventDate = document.getElementById("newEventDate").value;
     let eventDateFormatted = `${eventDate} 00:00`;
     eventObj.date = new Date(eventDateFormatted).toLocaleDateString();
-   
+
     //save
     curEvents.push(eventObj);
     localStorage.setItem("eventData", JSON.stringify(curEvents));
