@@ -247,7 +247,7 @@ function saveEventData() {
     if (Number.isInteger(attendanceNbr) && attendanceNbr >= 1) {
         eventObj.attendance = attendanceNbr;
     } else {
-        Swal.fire("Oops!", "Please enter a number greater than 0");
+        alert("Oops, please enter a number greater than 0.");
         return;
     }
 
@@ -256,8 +256,9 @@ function saveEventData() {
     let eventDateFormatted = `${eventDate} 00:00`;
     eventObj.date = new Date(eventDateFormatted).toLocaleDateString();
 
-    //save
+    //add object to array
     curEvents.push(eventObj);
+    // save new array to local storage
     localStorage.setItem("eventData", JSON.stringify(curEvents));
 
     buildDropDown();
